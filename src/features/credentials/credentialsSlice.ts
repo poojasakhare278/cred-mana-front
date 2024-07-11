@@ -21,39 +21,56 @@ const initialState: CredentialsState = {
   error: null,
 };
 
-// Async thunk for fetching credentials
-export const fetchCredentials = createAsyncThunk(
+const API_BASE_URL = 'https://cred-mana-back.onrender.com/api/credentials';
+
+
+export const fetchCredentials = createAsyncThunk<Credential[]>(
   'credentials/fetchCredentials',
-  async () => {
-    const response = await axios.get<Credential[]>('https://cred-mana-back.onrender.com/api/credentials');
-    return response.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get<Credential[]>(API_BASE_URL);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch credentials');
+    }
   }
 );
 
-// Async thunk for adding a credential
-export const addCredential: any = createAsyncThunk(
+export const addCredential : any = createAsyncThunk<Credential, Credential> (
   'credentials/addCredential',
-  async (newCredential: Credential) => {
-    const response = await axios.post<Credential>('https://cred-mana-back.onrender.com/api/credentials', newCredential);
-    return response.data;
+  async (newCredential, { rejectWithValue }) => {
+    try {
+      const response = await axios.post<Credential>(API_BASE_URL, newCredential);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to add credential');
+    }
   }
 );
 
-// Async thunk for deleting a credential
-export const deleteCredential : any = createAsyncThunk(
+
+export const deleteCredential = createAsyncThunk<string, string>(
   'credentials/deleteCredential',
-  async (credentialId: string) => {
-    await axios.delete(`https://cred-mana-back.onrender.com/api/credentials/${credentialId}`);
-    return credentialId;
+  async (credentialId, { rejectWithValue }) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/${credentialId}`);
+      return credentialId;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to delete credential');
+    }
   }
 );
 
-// Async thunk for updating a credential
-export const updateCredential: any = createAsyncThunk(
+
+export const updateCredential = createAsyncThunk<Credential, Credential>(
   'credentials/updateCredential',
-  async (updatedCredential: Credential) => {
-    const response = await axios.put<Credential>(`https://cred-mana-back.onrender.com/api/credentials/${updatedCredential.id}`, updatedCredential);
-    return response.data;
+  async (updatedCredential, { rejectWithValue }) => {
+    try {
+      const response = await axios.put<Credential>(`${API_BASE_URL}/${updatedCredential.id}`, updatedCredential);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to update credential');
+    }
   }
 );
 
@@ -63,7 +80,7 @@ const credentialsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch credentials
+ 
       .addCase(fetchCredentials.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -72,21 +89,27 @@ const credentialsSlice = createSlice({
         state.credentials = action.payload;
         state.loading = false;
       })
-      .addCase(fetchCredentials.rejected, (state, action) => {
+      .addCase(fetchCredentials.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch credentials';
+        state.error = action.payload || 'Failed to fetch credentials';
       })
-      // Add credential
+
       .addCase(addCredential.fulfilled, (state, action: PayloadAction<Credential>) => {
         state.credentials.push(action.payload);
       })
-      // Delete credential
+      .addCase(addCredential.rejected, (state, action: PayloadAction<any>) => {
+        state.error = action.payload || 'Failed to add credential';
+      })
+
       .addCase(deleteCredential.fulfilled, (state, action: PayloadAction<string>) => {
         state.credentials = state.credentials.filter(
           (credential) => credential.id !== action.payload
         );
       })
-      // Update credential
+      .addCase(deleteCredential.rejected, (state, action: PayloadAction<any>) => {
+        state.error = action.payload || 'Failed to delete credential';
+      })
+
       .addCase(updateCredential.fulfilled, (state, action: PayloadAction<Credential>) => {
         const index = state.credentials.findIndex(
           (credential) => credential.id === action.payload.id
@@ -94,6 +117,9 @@ const credentialsSlice = createSlice({
         if (index !== -1) {
           state.credentials[index] = action.payload;
         }
+      })
+      .addCase(updateCredential.rejected, (state, action: PayloadAction<any>) => {
+        state.error = action.payload || 'Failed to update credential';
       });
   },
 });

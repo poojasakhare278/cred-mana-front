@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectCredentials } from '../features/credentials/credentialsSlice';
 import CredentialCard from './CredentialCard';
 import '../styles/CredentialList.scss';
-import { Credential } from '../features/credentials/credentialsSlice'; // Assuming Credential type is exported from credentialsSlice
+import { Credential } from '../features/credentials/credentialsSlice'; 
 
 const CredentialList: React.FC = () => {
   const credentials = useSelector(selectCredentials);
