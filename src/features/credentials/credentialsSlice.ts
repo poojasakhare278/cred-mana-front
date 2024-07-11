@@ -25,7 +25,7 @@ const initialState: CredentialsState = {
 export const fetchCredentials = createAsyncThunk(
   'credentials/fetchCredentials',
   async () => {
-    const response = await axios.get<Credential[]>('/api/credentials');
+    const response = await axios.get<Credential[]>('https://cred-mana-back.onrender.com/api/credentials');
     return response.data;
   }
 );
@@ -34,7 +34,7 @@ export const fetchCredentials = createAsyncThunk(
 export const addCredential: any = createAsyncThunk(
   'credentials/addCredential',
   async (newCredential: Credential) => {
-    const response = await axios.post<Credential>('/api/credentials', newCredential);
+    const response = await axios.post<Credential>('https://cred-mana-back.onrender.com/api/credentials', newCredential);
     return response.data;
   }
 );
@@ -43,7 +43,7 @@ export const addCredential: any = createAsyncThunk(
 export const deleteCredential : any = createAsyncThunk(
   'credentials/deleteCredential',
   async (credentialId: string) => {
-    await axios.delete(`/api/credentials/${credentialId}`);
+    await axios.delete(`https://cred-mana-back.onrender.com/api/credentials/${credentialId}`);
     return credentialId;
   }
 );
@@ -52,7 +52,7 @@ export const deleteCredential : any = createAsyncThunk(
 export const updateCredential: any = createAsyncThunk(
   'credentials/updateCredential',
   async (updatedCredential: Credential) => {
-    const response = await axios.put<Credential>(`/api/credentials/${updatedCredential.id}`, updatedCredential);
+    const response = await axios.put<Credential>(`https://cred-mana-back.onrender.com/api/credentials/${updatedCredential.id}`, updatedCredential);
     return response.data;
   }
 );
