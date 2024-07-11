@@ -1,0 +1,20 @@
+@import '_variables.scss';
+
+.navbar {
+    background: $primary-color;
+    color: white;
+    padding: 15px;
+  
+    .links {
+      a {
+        color: white;
+        text-decoration: none;
+        margin-right: 15px;
+  
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
