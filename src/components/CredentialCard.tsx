@@ -13,7 +13,7 @@ interface CredentialCardProps {
 }
 
 const CredentialCard: React.FC<CredentialCardProps> = ({ id, loginUrl: initialLoginUrl, username: initialUsername, passcode: initialPasscode }) => {
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   const [loginUrl, setLoginUrl] = useState(initialLoginUrl);
   const [username, setUsername] = useState(initialUsername);
